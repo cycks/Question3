@@ -13,6 +13,7 @@ alldata<-subset(alldata, select = c("defendant", "year", "state", "county", "def
 
 alldata[which(alldata[,3]=='Floridaorida', arr.ind=TRUE), 3] <- 'Florida'
 alldata[which(alldata[,3]=='Nebraskabraska', arr.ind=TRUE), 3] <- 'Nebraska'
+alldata[which(alldata[,3]=='OKlahoma', arr.ind=TRUE), 3] <- 'Oklahoma'
 
 View(alldata)
 ########################################################
@@ -21,9 +22,10 @@ View(alldata)
 alldata.map<- alldata %>% group_by(state, year) %>% mutate(count = n())
 use.for.map <- unique(subset(alldata.map, select=c(state, count, year)))
 
-use.for.map<-dplyr::filter(use.for.map,state!="Federal")
+use.for.map<-dplyr::filter(use.for.map,state!= "Federal")
+use.for.map<-dplyr::filter(use.for.map,state!= "U.S. Military")
 
-
+View(use.for.map)
 
 # Since the number of peple sentenced from each state may be inflated by the population
 # of different states, wefind the count as a ratio of every states total population for
@@ -51,9 +53,8 @@ calculateratios<-function(df1, df2){
     
     ans<-which(df2 == paste(state), arr.ind = T)
     year.population<-df2[(ans[,1]),as.character(year)]
-    print(c(paste(count), paste(year.population)))
-    if (year.population>0){
-      ratio<- (count/year.population)*100000
+    if (!is.null(year.population )){
+      ratio<- (count/year.population)*10000000
     }else{
       ratio<-"NA"
     }
@@ -66,7 +67,9 @@ calculateratios<-function(df1, df2){
 }
 
 myratios<- c(calculateratios(use.for.map, populationdata))
-myratios
+
+use.for.map$sentences.2.population<-myratios
+View(use.for.map)
 
 
 plot_usmap(data = use.for.map, values = "count", regions = "states") + 
@@ -75,16 +78,32 @@ plot_usmap(data = use.for.map, values = "count", regions = "states") +
   scale_fill_continuous(name = "Number of Death Sentences", label = scales::comma) + 
   theme(legend.position = "right")
 
-use.for.map1<- subset(use.for.map, count>=30)
-View(use.for.map)
+use.for.map1<- subset(use.for.map, count>=100)
+
+
+use.for.map2<- subset(use.for.map, count>=200)
+
+
 
 
 ggplot(data=use.for.map1, aes(x=sort(state), y=count)) +
   geom_bar(fill="#DD8888", width=.8, stat="identity")+
   xlab("Year") + ylab("Number of death sentences") +
   ggtitle("A Bar Graph Showng the Number of Death Sentences by State for States with
-sentences greter than 100 since 1991")
+sentences greater than 100 since 1991")
 
+ggplot(data=use.for.map2, aes(x=sort(state), y=count)) +
+  geom_bar(fill="#DD8888", width=.8, stat="identity")+
+  xlab("Year") + ylab("Number of death sentences") +
+  ggtitle("A Bar Graph Showng the Number of Death Sentences by State for States with
+          sentences greter than 100 since 1991")
+
+
+ggplot(data=use.for.map, aes(x=sort(state), y=sentences.2.population)) +
+  geom_bar(fill="#DD8888", width=.8, stat="identity")+
+  xlab("Year") + ylab("Ratio of death sentences to Population") +
+  ggtitle("A Bar Graph Showng the Number of Death Sentences by State for States with
+          sentences greter than 100 since 1991")
 
 # Create bar graph based on years
 alldata.graph<- alldata %>% group_by(year) %>% mutate(count = n())
