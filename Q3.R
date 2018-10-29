@@ -20,7 +20,54 @@ View(alldata)
 
 alldata.map<- alldata %>% group_by(state, year) %>% mutate(count = n())
 use.for.map <- unique(subset(alldata.map, select=c(state, count, year)))
-View(use.for.map)
+
+use.for.map<-dplyr::filter(use.for.map,state!="Federal")
+
+
+
+# Since the number of peple sentenced from each state may be inflated by the population
+# of different states, wefind the count as a ratio of every states total population for
+# every year.
+
+population_2000 <- read_csv("population_2000.csv")
+
+population_2010 <- read_csv("population_2010.csv")
+population_2017 <- read_csv("population_2017.csv")
+
+population_2010 <- aggregate(. ~ state, data=population_2010, FUN=sum)
+
+
+populationdata<-merge(population_2000, population_2010, by = 'state')
+populationdata<-merge(populationdata, population_2017, by = 'state')
+
+
+calculateratios<-function(df1, df2){
+  sentences.2.population <- vector(mode="numeric", length=0)
+  
+  for (row in 1:nrow(df1)) {
+    state <- df1[row, "state"]
+    count  <- df1[row, "count"]
+    year  <- df1[row, "year"]
+    
+    ans<-which(df2 == paste(state), arr.ind = T)
+    year.population<-df2[(ans[,1]),as.character(year)]
+    print(c(paste(count), paste(year.population)))
+    if (year.population>0){
+      ratio<- (count/year.population)*100000
+    }else{
+      ratio<-"NA"
+    }
+    
+    sentences.2.population <- c(sentences.2.population, paste(ratio))
+    
+  }
+  return(sentences.2.population)
+
+}
+
+myratios<- c(calculateratios(use.for.map, populationdata))
+myratios
+
 
 plot_usmap(data = use.for.map, values = "count", regions = "states") + 
   labs(title =  "Death sentences in the United States by State.") + 
@@ -30,10 +77,7 @@ plot_usmap(data = use.for.map, values = "count", regions = "states") +
 
 use.for.map1<- subset(use.for.map, count>=30)
 View(use.for.map)
-calculateraio<-function(count, population){
-  ratio<-(count/population)*1000000
-  return(ratio)
-}
+
 
 ggplot(data=use.for.map1, aes(x=sort(state), y=count)) +
   geom_bar(fill="#DD8888", width=.8, stat="identity")+
@@ -53,23 +97,7 @@ ggplot(data=use.for.graph, aes(x=year, y=count)) +
   ggtitle("A Bar Graph Showng the Number of Death Sentences by Year")
 
 
-population_2000 <- read_csv("population_2000.csv")
 
-population_2010 <- read_csv("population_2010.csv")
-population_2017 <- read_csv("population_2017.csv")
-
-population_2010 <- aggregate(. ~ state, data=population_2010, FUN=sum)
-
-
-population_2000$state==population_2010$state
-population_2017$state==population_2010$state
-
-populationdata<-merge(population_2000, population_2010, by = 'state')
-populationdata<-merge(populationdata, population_2017, by = 'state')
-
-colSums(populationdata[sapply(populationdata, is.numeric)], na.rm = TRUE)
-
-View(populationdata)
 
 
 
