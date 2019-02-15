@@ -1,8 +1,8 @@
-setwd("E:/projects/data incubator/QuestionThree/Question3")
+setwd("~/Desktop/My Files/Projects/Data Incubator/Question3")
 libs = c("readr", "dplyr", "tidyverse", "magrittr", "tidyr", "ggplot2", "rgeos",
          "usmap")
 lapply(libs, require, character.only = TRUE)
-alldata<- read_csv("sentences.csv")
+alldata<- read_csv("dataset/sentences.csv")
 
 ###########################################
 ### Clean the Data
@@ -31,10 +31,10 @@ View(use.for.map)
 # of different states, wefind the count as a ratio of every states total population for
 # every year.
 
-population_2000 <- read_csv("population_2000.csv")
+population_2000 <- read_csv("dataset/population_2000.csv")
 
-population_2010 <- read_csv("population_2010.csv")
-population_2017 <- read_csv("population_2017.csv")
+population_2010 <- read_csv("dataset/population_2010.csv")
+population_2017 <- read_csv("dataset/population_2017.csv")
 
 population_2010 <- aggregate(. ~ state, data=population_2010, FUN=sum)
 
