@@ -1,7 +1,7 @@
 # The American Death Sentences Dataset
 # Table of Contents
-[Introduction](#Introduction)
-[Objectives](##Objectives)
+1. [Introduction](#Introduction)
+2. [Objectives](#Objectives)
 # Introduction
 Garret, Jakubow, and Desai (2017), conducted a study on death sentences in the United States of America.
 The publication could be found [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2911016), while
