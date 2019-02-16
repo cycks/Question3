@@ -3,7 +3,7 @@ libs = c("readr", "dplyr", "tidyverse", "magrittr", "tidyr", "ggplot2", "rgeos",
          "usmap")
 lapply(libs, require, character.only = TRUE)
 alldata<- read_csv("dataset/sentences.csv")
-
+View(alldata)
 ###########################################
 ### Clean the Data
 names(alldata)
@@ -41,7 +41,7 @@ population_2010 <- aggregate(. ~ state, data=population_2010, FUN=sum)
 
 populationdata<-merge(population_2000, population_2010, by = 'state')
 populationdata<-merge(populationdata, population_2017, by = 'state')
-
+View(populationdata)
 
 calculateratios<-function(df1, df2){
   sentences.2.population <- vector(mode="numeric", length=0)
