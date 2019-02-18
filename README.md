@@ -1,4 +1,5 @@
 # The American Death Sentences Dataset
+**Motivation:** **```Good, better, best. Never let it rest. 'Til your good is better and your better is best.```**
 ### Table of Contents
 1. [Introduction](#Introduction)
 2. [Objectives](#Objectives)
