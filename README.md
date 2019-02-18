@@ -23,4 +23,3 @@ but I could stray from the objectives depending on the direction I will take whe
 The original data set, while it could be used in its original state, was cleaned to meet the objectives of the 
 researcher. 
 1. Columns with too many missing values were removed
-2. An additional column containing the population of 
